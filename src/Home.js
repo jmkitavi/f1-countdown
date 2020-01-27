@@ -13,7 +13,12 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar hidden/>
+      <StatusBar
+        hidden
+        backgroundColor='black'
+        barStyle='light-content'
+      />
+
       <Image
         source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/799px-F1.svg.png' }}
         style={{ width: '80%', flex: 2 }}
