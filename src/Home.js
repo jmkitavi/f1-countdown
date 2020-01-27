@@ -39,6 +39,7 @@ const Home = () => {
             onFinish={() => setStarted(true)}
             size={30}
             style={{ flex: 1 }}
+            timeLabelStyle={{ color: 'white', fontFamily: 'Formula1-Regular', fontSize: 12 }}
           />
         ) :
         (
