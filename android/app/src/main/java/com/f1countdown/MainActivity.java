@@ -1,4 +1,4 @@
-package com.f1countdown;
+package com.sirjmkitavi.f1countdown;
 
 import com.facebook.react.ReactActivity;
 
