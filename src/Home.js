@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   StyleSheet,
   View,
@@ -7,10 +7,35 @@ import {
   Image,
 } from 'react-native'
 import CountDown from 'react-native-countdown-component'
+import axios from 'axios'
+import moment from 'moment'
+import LottieView from 'lottie-react-native'
 
 import BottomPanel from './BottomPanel'
+
+
 const Home = () => {
   const [started, setStarted] = useState(false)
+  const [nextRound, setNextRound] = useState(null)
+  const [race, setRace] = useState(null)
+  const [raceTime, setRaceTime] = useState('')
+
+  useEffect(() => {
+    if (!race) {
+      axios.get('https://ergast.com/api/f1/2020/next.json')
+        .then(res => {
+          setRace(res.data.MRData.RaceTable.Races[0])
+          setNextRound(res.data.MRData.RaceTable.Races[0].round)
+          setRaceTime(moment(`${res.data.MRData.RaceTable.Races[0].date} ${res.data.MRData.RaceTable.Races[0].time}`).format())
+        })
+        .catch(err => console.log('err HAPA', { ...err }))
+    }
+  })
+  
+  passRace = (race) => {
+    setRace(race)
+    setRaceTime(moment(`${race.date} ${race.time}`).format())
+  }
 
   return (
     <View style={styles.container}>
@@ -27,20 +52,35 @@ const Home = () => {
       />
 
       <View style={{ flex: 1, alignItems: 'center' }}>
-        <Text style={{ color: 'white', fontFamily: 'Formula1-Bold', lineHeight: 30 }}>Next Race</Text>
-        <Text style={{ color: 'white', fontFamily: 'Formula1-Wide', lineHeight: 30, fontSize: 20  }}>AUSTRALIAN GP</Text>
-        <Text style={{ color: 'white', fontFamily: 'Formula1-Regular' }}>Melbourne Grand Prix Circuit</Text>
-        <Text style={{ color: 'white', fontFamily: 'Formula1-Bold' }}>Sun, 15 Mar 2020</Text>
+        {race ?
+          (
+            <React.Fragment>
+              {nextRound === race.round &&
+                <Text style={{ color: 'white', fontFamily: 'Formula1-Bold', lineHeight: 30 }}>Next Race</Text>
+              }
+              <Text style={{ color: 'white', fontFamily: 'Formula1-Wide', lineHeight: 30, fontSize: 20, textTransform: 'uppercase' }}>
+                {race.raceName.replace(/Grand Prix/g,'GP')}
+              </Text>
+              <Text style={{ color: 'white', fontFamily: 'Formula1-Regular', lineHeight: 30 }}> {race.Circuit.circuitName} </Text>
+              <Text style={{ color: 'white', fontFamily: 'Formula1-Bold' }}> {moment(raceTime).format('ddd, Do MMM YYYY')} </Text>
+              <Text style={{ color: 'white', fontFamily: 'Formula1-Bold' }}> {moment(raceTime).format('hh:mm a')} </Text>
+            </React.Fragment>
+          ) :
+          (
+            <LottieView source={require('./loading.json')} autoPlay loop style={{ height: 100, width: 100 }} />
+            )
+        }
       </View>
 
       {!started ?
         (
           <CountDown
-            until={(new Date("March 15, 2020 8:10:00") - new Date()) / 1000}
+            until={race && (new Date(raceTime) - new Date()) / 1000}
             onFinish={() => setStarted(true)}
             size={30}
             style={{ flex: 1 }}
             timeLabelStyle={{ color: 'white', fontFamily: 'Formula1-Regular', fontSize: 12 }}
+            running={!!raceTime}
           />
         ) :
         (
@@ -49,7 +89,9 @@ const Home = () => {
           </View>
         )
       }
-      <BottomPanel />
+
+      <BottomPanel passRace={passRace} />
+
     </View>
   )
 }

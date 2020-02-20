@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "lottie-react-native": "^3.3.2",
+    "moment": "^2.24.0",
     "react": "16.9.0",
     "react-native": "0.61.5",
     "react-native-countdown-component": "^2.6.0",
@@ -21,7 +22,8 @@
     "react-native-screens": "^2.0.0-alpha.26",
     "react-navigation": "^4.0.10",
     "react-navigation-animated-switch": "^0.4.1",
-    "rn-bottom-drawer": "^1.4.3"
+    "rn-bottom-drawer": "^1.4.3",
+    "rn-bottom-sheet": "^1.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

@@ -8,9 +8,10 @@ import {
 } from 'react-native'
 import LottieView from 'lottie-react-native'
 import BottomDrawer from 'rn-bottom-drawer'
+// import BottomDrawer from 'rn-bottom-sheet'
 import axios from 'axios'
 
-const BottomPanel = () => {
+const BottomPanel = ({ passRace }) => {
   const [open, setOpen] = useState(false)
   const [races, setRaces] = useState(null)
 
@@ -62,7 +63,7 @@ const BottomPanel = () => {
                 <TouchableOpacity
                   key={race.round}
                   style={styles.race}
-                  onPress={() => {}}
+                  onPress={() => passRace(race)}
                 >
                   <Text style={styles.raceName}>{race.raceName}</Text>
                 </TouchableOpacity>

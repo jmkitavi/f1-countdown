@@ -4612,6 +4612,11 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
+moment@^2.24.0:
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
+
 morgan@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.9.1.tgz#0a8d16734a1d9afbc824b99df87e738e58e2da59"
@@ -5732,6 +5737,11 @@ rn-bottom-drawer@^1.4.3:
   integrity sha512-atS7HEQOoqLQftxyBalYHlf+YAEPw9zQ6RG00yf3xIu8TWsd5ST8Z0h3RwLFXsXnbvjP2OBvsvraZsXF8G7r0w==
   dependencies:
     prop-types "^15.6.2"
+
+rn-bottom-sheet@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/rn-bottom-sheet/-/rn-bottom-sheet-1.1.0.tgz#e7f1f29256d1b3acb3189772fcbfdd20bc7a38ac"
+  integrity sha512-D2EbkR6VqsT65v+EFDCbZKMjI2dSfJtiVH9w5P2hq5LC/KI16+Ft6iohJNmWdtTntxfC1LNbz3M7BCUxnrMUbw==
 
 rsvp@^4.8.4:
   version "4.8.5"

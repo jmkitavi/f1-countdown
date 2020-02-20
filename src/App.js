@@ -7,6 +7,9 @@ import createAnimatedSwitchNavigator from 'react-navigation-animated-switch'
 import { Transition } from 'react-native-reanimated'
 
 
+console.disableYellowBox = true
+
+
 const AuthNav = createAnimatedSwitchNavigator(
   {
     AuthLoading: AuthLoading,
