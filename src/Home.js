@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import CountDown from 'react-native-countdown-component'
 
+import BottomPanel from './BottomPanel'
 const Home = () => {
   const [started, setStarted] = useState(false)
 
@@ -48,6 +49,7 @@ const Home = () => {
           </View>
         )
       }
+      <BottomPanel />
     </View>
   )
 }
