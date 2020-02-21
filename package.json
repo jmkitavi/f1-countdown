@@ -20,6 +20,7 @@
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.6.2",
     "react-native-screens": "^2.0.0-alpha.26",
+    "react-native-swiper": "^1.6.0-nightly.5",
     "react-navigation": "^4.0.10",
     "react-navigation-animated-switch": "^0.4.1",
     "rn-bottom-drawer": "^1.4.3",

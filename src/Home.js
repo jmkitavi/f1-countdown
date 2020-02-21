@@ -5,11 +5,13 @@ import {
   Text,
   StatusBar,
   Image,
+  Dimensions,
 } from 'react-native'
 import CountDown from 'react-native-countdown-component'
 import axios from 'axios'
 import moment from 'moment'
 import LottieView from 'lottie-react-native'
+import Swiper from 'react-native-swiper'
 
 import BottomPanel from './BottomPanel'
 
@@ -38,60 +40,92 @@ const Home = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       <StatusBar
         hidden
         backgroundColor='black'
         barStyle='light-content'
       />
 
-      <Image
-        source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/799px-F1.svg.png' }}
-        style={{ width: '80%', flex: 2 }}
-        resizeMode='contain'
-      />
+      <Swiper
+        showsButtons={false}
+        loop={false}
+        index={1}
+        containerStyle={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', alignContent: 'flex-start' }}
+        activeDotColor={'white'}
+        dotColor={'gold'}
+        paginationStyle={{
+          bottom: Dimensions.get('window').height - 30,
+        }}
+      >
 
-      <View style={{ flex: 1, alignItems: 'center' }}>
-        {race ?
-          (
-            <React.Fragment>
-              {nextRound === race.round &&
-                <Text style={{ color: 'white', fontFamily: 'Formula1-Bold', lineHeight: 30 }}>Next Race</Text>
-              }
-              <Text style={{ color: 'white', fontFamily: 'Formula1-Wide', lineHeight: 30, fontSize: 20, textTransform: 'uppercase' }}>
-                {race.raceName.replace(/Grand Prix/g,'GP')}
-              </Text>
-              <Text style={{ color: 'white', fontFamily: 'Formula1-Regular', lineHeight: 30 }}> {race.Circuit.circuitName} </Text>
-              <Text style={{ color: 'white', fontFamily: 'Formula1-Bold' }}> {moment(raceTime).format('ddd, Do MMM YYYY')} </Text>
-              <Text style={{ color: 'white', fontFamily: 'Formula1-Bold' }}> {moment(raceTime).format('hh:mm a')} </Text>
-            </React.Fragment>
-          ) :
-          (
-            <LottieView source={require('./loading.json')} autoPlay loop style={{ height: 100, width: 100 }} />
-            )
-        }
-      </View>
+        <View style={{ flex: 1, backgroundColor: 'red' }} />
 
-      {!started ?
-        (
-          <CountDown
-            until={race && (new Date(raceTime) - new Date()) / 1000}
-            onFinish={() => setStarted(true)}
-            size={30}
-            style={{ flex: 1 }}
-            timeLabelStyle={{ color: 'white', fontFamily: 'Formula1-Regular', fontSize: 12 }}
-            running={!!raceTime}
-          />
-        ) :
-        (
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ color: 'white', fontFamily: 'Formula1-Bold' }}>Race Started</Text>
+        <View style={styles.container}>
+
+          <View style={styles.navigators}>
+            <View style={{ width: '50%', flexDirection: 'row', left: -18, alignItems: 'flex-start' }}>
+              <LottieView source={require('./back.json')} autoPlay loop={true} speed={.3} style={{ height: 55, width: 40, top: -7 }} />
+              <Text style={styles.navText}> Race Details </Text>
+            </View>
+            <View style={{ width: '50%', flexDirection: 'row', right: -18, alignItems: 'flex-end', transform: [{ rotate: '180deg' }] }}>
+              <LottieView source={require('./back.json')} autoPlay loop={true} speed={.3} style={{ height: 55, width: 40, top: -1 }} />
+              <Text style={[ styles.navText, { transform: [{ rotate: '180deg' }]} ]}> Standings </Text>
+            </View>
           </View>
-        )
-      }
 
-      <BottomPanel passRace={passRace} />
+          <Image
+            source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/799px-F1.svg.png' }}
+            style={{ width: '80%', flex: 2, top: -20, backgroundColor: 'black' }}
+            resizeMode='contain'
+          />
 
+          <View style={{ flex: 1, alignItems: 'center', top: -20 }}>
+            {race ?
+              (
+                <React.Fragment>
+                  {nextRound === race.round &&
+                    <Text style={{ color: 'white', fontFamily: 'Formula1-Bold', lineHeight: 30 }}>Next Race</Text>
+                  }
+                  <Text style={{ color: 'white', fontFamily: 'Formula1-Wide', lineHeight: 30, fontSize: 20, textTransform: 'uppercase' }}>
+                    {race.raceName.replace(/Grand Prix/g,'GP')}
+                  </Text>
+                  <Text style={{ color: 'white', fontFamily: 'Formula1-Regular', lineHeight: 30 }}> {race.Circuit.circuitName} </Text>
+                  <Text style={{ color: 'white', fontFamily: 'Formula1-Bold' }}> {moment(raceTime).format('ddd, Do MMM YYYY')} </Text>
+                  <Text style={{ color: 'white', fontFamily: 'Formula1-Bold' }}> {moment(raceTime).format('hh:mm a')} </Text>
+                </React.Fragment>
+              ) :
+              (
+                <LottieView source={require('./loading.json')} autoPlay loop style={{ height: 100, width: 100 }} />
+                )
+            }
+          </View>
+
+          {!started ?
+            (
+              <CountDown
+                until={race && (new Date(raceTime) - new Date()) / 1000}
+                onFinish={() => setStarted(true)}
+                size={30}
+                style={{ flex: 1 }}
+                timeLabelStyle={{ color: 'white', fontFamily: 'Formula1-Regular', fontSize: 12 }}
+                running={!!raceTime}
+              />
+            ) :
+            (
+              <View style={{ flex: 1, alignItems: 'center' }}>
+                <Text style={{ color: 'white', fontFamily: 'Formula1-Bold' }}>Race Started</Text>
+              </View>
+            )
+          }
+
+          <BottomPanel passRace={passRace} />
+
+        </View>
+
+        <View style={{ flex: 1, backgroundColor: 'yellow' }} />
+
+      </Swiper>
     </View>
   )
 }
@@ -102,6 +136,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     backgroundColor: 'black',
+    paddingBottom: 50
+  },
+  navigators: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+  },
+  navText: {
+    color: 'white',
+    fontFamily: 'Formula1-Regular',
+    fontSize: 12,
+    lineHeight: 30,
+    left: -10,
   },
 })
 
