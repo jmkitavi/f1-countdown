@@ -21,6 +21,7 @@ const Home = () => {
   const [nextRound, setNextRound] = useState(null)
   const [race, setRace] = useState(null)
   const [raceTime, setRaceTime] = useState('')
+  const [swiperIndex, setSwiperIndex] = useState(1)
 
   useEffect(() => {
     if (!race) {
@@ -50,29 +51,33 @@ const Home = () => {
       <Swiper
         showsButtons={false}
         loop={false}
-        index={1}
+        index={swiperIndex}
         containerStyle={{ flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start', alignContent: 'flex-start' }}
         activeDotColor={'white'}
         dotColor={'gold'}
         paginationStyle={{
           bottom: Dimensions.get('window').height - 30,
         }}
+        showsButtons
+        buttonWrapperStyle={{ top: -(Dimensions.get('window').height / 3) - 80 }}
+        prevButton={(
+          <View style={{ width: '100%', flexDirection: 'row', left: -20, alignItems: 'flex-start' }}>
+            <LottieView source={require('./back.json')} autoPlay loop={true} speed={.3} style={{ height: 55, width: 40, top: -7 }} />
+            <Text style={styles.navText}> {swiperIndex !== 1 ? 'Back' : ' Race Details' } </Text>
+          </View>
+        )}
+        nextButton={(
+          <View style={{ width: '100%', flexDirection: 'row', right: -18, alignItems: 'flex-end', transform: [{ rotate: '180deg' }] }}>
+            <LottieView source={require('./back.json')} autoPlay loop={true} speed={.3} style={{ height: 55, width: 40, top: -1 }} />
+            <Text style={[ styles.navText, { transform: [{ rotate: '180deg' }]} ]}> {swiperIndex !== 1 ? 'Back' : 'Standings' } </Text>
+          </View>
+        )}
+        onIndexChanged={(index) => setSwiperIndex(index)}
       >
 
         <View style={{ flex: 1, backgroundColor: 'red' }} />
 
         <View style={styles.container}>
-
-          <View style={styles.navigators}>
-            <View style={{ width: '50%', flexDirection: 'row', left: -18, alignItems: 'flex-start' }}>
-              <LottieView source={require('./back.json')} autoPlay loop={true} speed={.3} style={{ height: 55, width: 40, top: -7 }} />
-              <Text style={styles.navText}> Race Details </Text>
-            </View>
-            <View style={{ width: '50%', flexDirection: 'row', right: -18, alignItems: 'flex-end', transform: [{ rotate: '180deg' }] }}>
-              <LottieView source={require('./back.json')} autoPlay loop={true} speed={.3} style={{ height: 55, width: 40, top: -1 }} />
-              <Text style={[ styles.navText, { transform: [{ rotate: '180deg' }]} ]}> Standings </Text>
-            </View>
-          </View>
 
           <Image
             source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/799px-F1.svg.png' }}
@@ -137,11 +142,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: 'black',
     paddingBottom: 50
-  },
-  navigators: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
   },
   navText: {
     color: 'white',
