@@ -14,6 +14,7 @@ import LottieView from 'lottie-react-native'
 import Swiper from 'react-native-swiper'
 
 import BottomPanel from './BottomPanel'
+import RaceDetails from './RaceDetails'
 
 
 const Home = () => {
@@ -21,6 +22,7 @@ const Home = () => {
   const [nextRound, setNextRound] = useState(null)
   const [race, setRace] = useState(null)
   const [raceTime, setRaceTime] = useState('')
+  const [prevRace, setPrevRace] = useState(null)
   const [swiperIndex, setSwiperIndex] = useState(1)
 
   useEffect(() => {
@@ -30,14 +32,24 @@ const Home = () => {
           setRace(res.data.MRData.RaceTable.Races[0])
           setNextRound(res.data.MRData.RaceTable.Races[0].round)
           setRaceTime(moment(`${res.data.MRData.RaceTable.Races[0].date} ${res.data.MRData.RaceTable.Races[0].time}`).format())
+          fetchPrevRace(2019, res.data.MRData.RaceTable.Races[0].Circuit.circuitId)
         })
         .catch(err => console.log('err HAPA', { ...err }))
     }
   })
   
+  fetchPrevRace = (year, circuitId) => {
+    axios.get(`https://ergast.com/api/f1/${year}/circuits/${circuitId}/results.json`)
+      .then(res => {
+        setPrevRace(res.data.MRData.RaceTable.Races[0])
+      })
+      .catch(err => console.log('err HAPA', { ...err }))
+  }
+
   passRace = (race) => {
     setRace(race)
     setRaceTime(moment(`${race.date} ${race.time}`).format())
+    fetchPrevRace(2019, race.Circuit.circuitId)
   }
 
   return (
@@ -75,7 +87,12 @@ const Home = () => {
         onIndexChanged={(index) => setSwiperIndex(index)}
       >
 
-        <View style={{ flex: 1, backgroundColor: 'red' }} />
+        {race ?
+          <RaceDetails race={race} prevRace={prevRace} fetchPrevRace={fetchPrevRace} /> :
+          <View style={{ flex: 1, backgroundColor: 'black' }}>
+            <LottieView source={require('./loading.json')} autoPlay loop style={{ height: 100, width: 100 }} />
+          </View>
+        }
 
         <View style={styles.container}>
 
@@ -139,7 +156,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-around',
     backgroundColor: 'black',
     paddingBottom: 50
   },
