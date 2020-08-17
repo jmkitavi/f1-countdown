@@ -8,10 +8,12 @@ import {
   Dimensions,
   Image,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native'
 import LottieView from 'lottie-react-native'
 import moment from 'moment'
 import { Dropdown } from 'react-native-material-dropdown'
+import axios from 'axios'
 
 
 // Source: wikipedia + f1.fandom.com
@@ -54,6 +56,9 @@ const years = [
 const RaceDetails = ({ race, prevRace, fetchPrevRace }) => {
   const [imageHeight, setImageHeight] = useState(null)
   const [visible, setVisible] = useState(false) // for Image Viewer
+  const [qualifyingRes, setQualifyingRes] = useState()
+  const [qualifying, setQualifying] = useState(false)
+
 
   useEffect(() => {
     if (!imageHeight) {
@@ -62,6 +67,14 @@ const RaceDetails = ({ race, prevRace, fetchPrevRace }) => {
       })
     }
   }, [])
+
+  const fetchQualifying = (season, round) => {
+    axios.get(`https://ergast.com/api/f1/${season}/${round}/qualifying.json`)
+      .then(res => {
+        setQualifyingRes(res.data.MRData.RaceTable.Races[0].QualifyingResults)
+      })
+      .catch(err => console.log('err HAPA', err))
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: 'black', paddingTop: 50 }}>
@@ -72,7 +85,9 @@ const RaceDetails = ({ race, prevRace, fetchPrevRace }) => {
       />
 
       {!race ? (
-        <LottieView source={require('./loading.json')} autoPlay loop style={{ height: 100, width: 100 }} />
+        <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+          <LottieView source={require('./loading.json')} autoPlay loop style={{ height: 100, width: 100 }} />
+        </View>
       ) : (
         <React.Fragment>
 
@@ -99,21 +114,56 @@ const RaceDetails = ({ race, prevRace, fetchPrevRace }) => {
               }
             </View>
 
-            <View>
-              <Text style={styles.cText}>Season:  <Text style={{ fontSize: 14 }}> {race.season}</Text></Text>
-              <Text style={styles.cText}>Round:    <Text style={{ fontSize: 14 }}> {race.round}</Text></Text>
-              <Text style={styles.cText}>Date:       <Text style={{ fontSize: 14 }}> {moment(`${race.date} ${race.time}`).format('ddd, Do MMM YYYY')}</Text></Text>
-              <Text style={styles.cText}>Time:       <Text style={{ fontSize: 14 }}> {moment(`${race.date} ${race.time}`).format('hh:mm a')}</Text></Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View>
+                <Text style={styles.cText}>Season:  <Text style={{ fontSize: 14 }}> {race.season}</Text></Text>
+                <Text style={styles.cText}>Round:    <Text style={{ fontSize: 14 }}> {race.round}</Text></Text>
+              </View>
+              <View>
+                <Text style={[styles.cText, { fontSize: 14 }]}>{moment(`${race.date} ${race.time}`).format('ddd, Do MMM YYYY')}</Text>
+                <Text style={[styles.cText, { fontSize: 14, textAlign: 'right' }]}>{moment(`${race.date} ${race.time}`).format('hh:mm a')}</Text>
+                {/* <Text style={styles.cText}>Date:       <Text style={{ fontSize: 14 }}> {moment(`${race.date} ${race.time}`).format('ddd, Do MMM YYYY')}</Text></Text> */}
+                {/* <Text style={styles.cText}>Time:       <Text style={{ fontSize: 14 }}> {moment(`${race.date} ${race.time}`).format('hh:mm a')}</Text></Text> */}
+              </View>
             </View>
 
             <View style={styles.prevHeader}>
-              <Text style={[styles.cText, { fontSize: 13}]}> Previous Results </Text>
+              <Text style={[styles.cText, { fontSize: 14, marginTop: 7 }]}>Previous Results </Text>
+            </View>
+
+            <View style={styles.resOptContainer}>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  style={[
+                    styles.resOpt,
+                    qualifying && { backgroundColor: 'transparent' }
+                  ]}
+                  onPress={() => setQualifying(false)}
+                >
+                  <Text style={[styles.name, { fontSize: 10 }]}>Race</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles.resOpt,
+                    !qualifying && { backgroundColor: 'transparent' }
+                  ]}
+                  onPress={() => {
+                    setQualifying(true)
+                    if (!qualifyingRes) fetchQualifying(prevRace.season, prevRace.round)
+                  }}
+                >
+                  <Text style={[styles.name, { fontSize: 10 }]}>Qualifying</Text>
+                </TouchableOpacity>
+              </View>
+
 
               <Dropdown
-                label='Year'
                 data={years}
-                value={prevRace ? prevRace.season : '2019'}
+                value={new Date().getFullYear() - 1}
                 onChangeText={(text) => {
+                  setQualifying(false) // reset to race results
+                  setQualifyingRes(null) // remove prev qualifying res
                   fetchPrevRace(text, race.Circuit.circuitId)
                 }}
                 baseColor='white'
@@ -123,24 +173,50 @@ const RaceDetails = ({ race, prevRace, fetchPrevRace }) => {
                 itemTextStyle={{ fontFamily: 'Formula1-Regular', fontSize: 10 }}
                 itemPadding={0}
                 itemCount={5}
-                dropdownOffset={{ top: 32, left: 0 }}
+                dropdownOffset={{ top: 0, left: 0 }}
+                dropdownMargins={{ min: 8, max: 20 }}
+                pickerStyle={{ minHeight: 100 }}
               />
             </View>
             
-            {prevRace && prevRace.Results.map((pos) =>
-              <View style={styles.driver}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.name}><Text style={{ fontSize: 6 }}>{pos.grid}</Text> {pos.position} </Text>
-                  <Text style={styles.name}>
-                    {pos.Driver.givenName} {pos.Driver.familyName}  •  {pos.Driver.permanentNumber}
-                  </Text>
-                </View>
-                {pos.Time ?
-                  <Text style={[styles.name, { textAlign: 'right' }]}> {pos.Time.time} </Text> :
-                  pos.status && <Text style={[styles.name, { textAlign: 'right' }]}> {pos.status} </Text>
-                }
-              </View>
-            )}
+            <View style={{ top: -12 }}>
+              {qualifying ? (
+                qualifyingRes && qualifyingRes.map((pos) =>
+                  <View style={styles.driver}>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={styles.name}>
+                        {pos.position}
+                      </Text>
+                      <Text style={styles.name}>
+                        {pos.Driver.givenName} {pos.Driver.familyName}  •  {pos.Driver.permanentNumber}
+                      </Text>
+                    </View>
+                    <Text style={[styles.name, { textAlign: 'right' }]}>
+                      {pos.Q3 || pos.Q2 || pos.Q1}
+                    </Text>
+                  </View>
+                )
+              ) : (
+                prevRace && prevRace.Results.map((pos) =>
+                  <View style={styles.driver}>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Text style={styles.name}>
+                        {/* TODO: show qualy pos in super script next to pos */}
+                        {/* <Text style={{ fontSize: 6 }}>{pos.grid} </Text> */}
+                        {pos.position}
+                      </Text>
+                      <Text style={styles.name}>
+                        {pos.Driver.givenName} {pos.Driver.familyName}  •  {pos.Driver.permanentNumber}
+                      </Text>
+                    </View>
+                    {pos.Time ?
+                      <Text style={[styles.name, { textAlign: 'right' }]}> {pos.Time.time} </Text> :
+                      pos.status && <Text style={[styles.name, { textAlign: 'right' }]}> {pos.status} </Text>
+                    }
+                  </View>
+                )
+              )}
+            </View>
 
             {/* <View style={{ flex: 1, height: 500}}></View> */}
 
@@ -159,12 +235,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontFamily: 'Formula1-Wide',
     fontSize: 20,
-    top: -10,
+    lineHeight: 25,
+    top: -5,
     textTransform: 'uppercase',
     textAlign: 'center',
   },
   container: {
-    backgroundColor: 'black',
+    backgroundColor: 'rgba(15, 15, 15, 1)',
     width: '100%',
     paddingBottom: 50,
   },
@@ -176,18 +253,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   prevHeader: {
-    borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-between',
-    top: -20,
   },
   driver: {
     flex: 1,
     flexDirection: 'row',
-    borderTopColor: '#303030',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    paddingVertical: 4,
+    borderBottomColor: 'rgba(48, 48, 48, .9)',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingVertical: 1.5,
     justifyContent: 'space-between',
   },
   name: {
@@ -197,6 +272,24 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     lineHeight: 30,
   },
+
+  resOptContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 10,
+  },
+  resOpt: {
+    backgroundColor: 'rgba(41, 176, 255, .9)',
+    borderRadius: 13,
+    borderWidth: 1,
+    borderColor: 'white',
+    paddingHorizontal: 10,
+    height: 26,
+    justifyContent: 'center',
+    alignContent: 'center',
+    marginHorizontal: 15,
+  }
 })
 
 export default RaceDetails
