@@ -15,6 +15,7 @@ import Swiper from 'react-native-swiper'
 
 import BottomPanel from './BottomPanel'
 import RaceDetails from './RaceDetails'
+import Standings from './Standings'
 
 
 const Home = () => {
@@ -89,7 +90,7 @@ const Home = () => {
 
         {race ?
           <RaceDetails race={race} prevRace={prevRace} fetchPrevRace={fetchPrevRace} /> :
-          <View style={{ flex: 1, backgroundColor: 'black' }}>
+          <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
             <LottieView source={require('./loading.json')} autoPlay loop style={{ height: 100, width: 100 }} />
           </View>
         }
@@ -145,7 +146,7 @@ const Home = () => {
 
         </View>
 
-        <View style={{ flex: 1, backgroundColor: 'yellow' }} />
+        <Standings />
 
       </Swiper>
     </View>
