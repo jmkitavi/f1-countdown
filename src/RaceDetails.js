@@ -40,6 +40,12 @@ const trackImages = {
   'rodriguez': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Aut%C3%B3dromo_Hermanos_Rodr%C3%ADguez_2015.svg/1024px-Aut%C3%B3dromo_Hermanos_Rodr%C3%ADguez_2015.svg.png',
   'interlagos': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/2014_Interlagos_circuit_map.svg/1920px-2014_Interlagos_circuit_map.svg.png',
   'yas_marina': 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Circuit_Yas-Island.svg/1920px-Circuit_Yas-Island.svg.png',
+  'mugello': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Mugello_Racing_Circuit_track_map.svg/1920px-Mugello_Racing_Circuit_track_map.svg.png',
+  'sakhir': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Bahrain_International_Circuit--Outer_Circuit.svg/800px-Bahrain_International_Circuit--Outer_Circuit.svg.png',
+  'nurburgring': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/N%C3%BCrburgring_-_Grand-Prix-Strecke.svg/1920px-N%C3%BCrburgring_-_Grand-Prix-Strecke.svg.png',
+  'portimao': 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Aut%C3%B3dromo_do_Algarve_alt.svg/1920px-Aut%C3%B3dromo_do_Algarve_alt.svg.png',
+  'imola': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Imola.svg/1920px-Imola.svg.png',
+  'istanbul': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Istanbul_park.svg/1920px-Istanbul_park.svg.png',
 }
 
 const years = [
